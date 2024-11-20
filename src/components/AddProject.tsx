@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 
 interface AddProjectProps {
     setAddProjectVisible: React.Dispatch<React.SetStateAction<boolean>>;
+    fetchProjects: () => void;
 }
 
 interface project {
@@ -15,7 +16,7 @@ interface project {
     storyPoints: number;
 }
 
-const AddProject: React.FC<AddProjectProps> = ({ setAddProjectVisible }) => {
+const AddProject: React.FC<AddProjectProps> = ({ setAddProjectVisible, fetchProjects }) => {
 
     const { token } = useSelector((state: RootState) => state.user);
     const [error, setError] = useState(null);
@@ -46,6 +47,7 @@ const AddProject: React.FC<AddProjectProps> = ({ setAddProjectVisible }) => {
             setProject({name: '', description: '', dueDate: '', cost: 0, storyPoints: 0});
             setAddProjectVisible(false);
             setLoading(false);
+            fetchProjects();
         }
         else {
             setError(data.message);
@@ -92,7 +94,7 @@ const AddProject: React.FC<AddProjectProps> = ({ setAddProjectVisible }) => {
                     className="w-full h-10 p-2 border rounded-lg outline-none "
                     min={1000}
                     max={10000}
-                    value={project?.cost}
+                    value={project?.cost === 0 ? "" : project?.cost}
                     onChange={(e) => setProject({...project, cost: Number(e.target.value)})}
                 />
                 <input
@@ -101,7 +103,7 @@ const AddProject: React.FC<AddProjectProps> = ({ setAddProjectVisible }) => {
                     className="w-full h-10 p-2 border rounded-lg outline-none "
                     min={10}
                     max={36}
-                    value={project?.storyPoints}
+                    value={project?.storyPoints === 0 ? "" : project?.storyPoints}
                     onChange={(e) => setProject({...project, storyPoints: Number(e.target.value)})}
                 />
             </div>

@@ -65,7 +65,7 @@ const Home = () => {
                     </div>
 
                     {/* Add Project Component */}
-                    {addProjectVisible && <AddProject setAddProjectVisible={setAddProjectVisible} />}
+                    {addProjectVisible && <AddProject setAddProjectVisible={setAddProjectVisible} fetchProjects={fetchProjects}/>}
                     
 
                     {/* Projects */}
@@ -81,7 +81,7 @@ const Home = () => {
                     )}
                     <div className="flex flex-wrap gap-8 mt-8">
                         {projects.map((project: any, id: number) => {
-                            return <ProjectCard key={id} {...project} />;
+                            return <ProjectCard key={id} {...project} fetchProjects={fetchProjects} />;
                         })}
                     </div>
                 </div>

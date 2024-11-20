@@ -4,6 +4,7 @@ import Login from "./components/Login";
 import Register from "./components/Register";
 import Header from "./components/Header";
 import ProtectedRoute from "./components/ProtectedRoute";
+import ProjectDetails from "./pages/ProjectDetails";
 
 function App() {
   return (
@@ -14,6 +15,12 @@ function App() {
           <Route path="/" element={
               <ProtectedRoute>
                 <Home />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/projects/:id" element={
+              <ProtectedRoute>
+                <ProjectDetails />
               </ProtectedRoute>
             }
           />

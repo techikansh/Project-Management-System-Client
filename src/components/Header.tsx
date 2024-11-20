@@ -18,7 +18,7 @@ const Header = () => {
   return (
     <div className="fixed top-0 left-0 right-0 bg-white z-50 border-b drop-shadow" >
       <div className="flex mx-8 my-3 justify-between items-center">
-        <h1 className="text-2xl font-semibold">Project Wise</h1>
+        <h1 className="text-2xl font-semibold hover:cursor-pointer" onClick={() => navigate("/")}>Project Wise</h1>
 
         {isAuthenticated ? (
           <div className="flex gap-4 items-center">
