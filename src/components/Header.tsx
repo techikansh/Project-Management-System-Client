@@ -16,7 +16,7 @@ const Header = () => {
   }
 
   return (
-    <div className=" border-b drop-shadow">
+    <div className="fixed top-0 left-0 right-0 bg-white z-50 border-b drop-shadow" >
       <div className="flex mx-8 my-3 justify-between items-center">
         <h1 className="text-2xl font-semibold">Project Wise</h1>
 

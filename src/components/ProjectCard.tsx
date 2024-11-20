@@ -1,39 +1,49 @@
 import { FaCalendar } from "react-icons/fa";
 import { FaEuroSign } from "react-icons/fa";
 import { MdNumbers } from "react-icons/md";
+import { MdDelete } from "react-icons/md";
 
 
-const ProjectCard = () => {
+interface ProjectCardProps {
+  name: string;
+  description: string;
+  dueDate: string;
+  cost: number;
+  storyPoints: number;
+}
+
+
+const ProjectCard: React.FC<ProjectCardProps> = (
+  {name, description, dueDate, cost, storyPoints}
+) => {
   return (
-    <div className="w-[400px] h-[350px] border rounded-lg shadow-md flex flex-col gap-4 py-4 px-4">
+    <div className="w-[400px] h-[350px] border rounded-lg shadow-md flex flex-col gap-4 py-4 px-4 hover:cursor-pointer relative">
 
-      <h1 className="text-2xl font-semibold">
-        Real Estate Platform (Immobilieinmarkt)
+      <MdDelete className="w-6 h-6 absolute top-6 right-2 hover:scale-150 duration-150"/>
+
+      <h1 className="text md:text-xl font-semibold">
+        {name}
       </h1>
 
       <p className="line-clamp-6 text-slate-500">
-        This project involves the development of a comprehensive real estate
-        platform designed to facilitate seamless interactions between property
-        buyers, sellers, and real estate agents. The platform features an
-        intuitive user interface built with React.js, ensuring a responsive and
-        interactive experience for users.
+        {description}
       </p>
 
 
         <div className="flex flex-col gap-2 text-slate-800 text-sm">
             <div className="flex items-center gap-3">
                 <FaCalendar />
-                <span>22.11.2024</span>
+                <span>{dueDate}</span>
             </div>
 
             <div className="flex items-center gap-3">
                 <FaEuroSign />
-                <span>6700</span>
+                <span>{cost}</span>
             </div>
 
             <div className="flex items-center gap-3">
                 <MdNumbers />
-                <span>13 Story Points</span>
+                <span>{storyPoints} Story Points</span>
             </div>
         </div>
 
