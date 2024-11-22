@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { BASE_URL } from "../utils/constants";
 import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
@@ -25,6 +25,8 @@ const ProjectDetails = () => {
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
     const [editing, setEditing] = useState(false);
+
+    const navigate = useNavigate();
 
     const [projectDetails, setProjectDetails] = useState<projectToUpdate>({
         name: "",
@@ -72,6 +74,7 @@ const ProjectDetails = () => {
         });
         const data = await res.json();
         if (data.success) {
+            console.log(data.projects[0]);
             setProject(data.projects[0]);
         } else {
             setError(data.message);
@@ -237,7 +240,12 @@ const ProjectDetails = () => {
 
                 </div>
 
-                <button className="bg-black text-white p-2 rounded-lg hover:scale-105 duration-150">Open Tasks Board</button>
+                <button 
+                    className="bg-black text-white p-2 rounded-lg hover:scale-105 duration-150" 
+                    onClick={() => navigate("/projects/" + id + "/tasks")}
+                >
+                    Open Tasks Board
+                </button>
             </div>
         </div>
     );
