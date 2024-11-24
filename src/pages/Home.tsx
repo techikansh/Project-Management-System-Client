@@ -9,7 +9,7 @@ import AddProject from "../components/AddProject";
 const Home = () => {
     const { token } = useSelector((state: RootState) => state.user);
     const [projects, setProjects] = useState<any[]>([]);
-    const [error, setError] = useState(null);
+    const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const [addProjectVisible, setAddProjectVisible] = useState(false);
 
