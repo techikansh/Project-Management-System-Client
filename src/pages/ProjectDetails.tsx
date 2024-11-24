@@ -9,6 +9,8 @@ import { FaUser } from "react-icons/fa";
 import { AiOutlineNumber } from "react-icons/ai";
 import { FaEuroSign } from "react-icons/fa";
 import { MdEdit } from "react-icons/md";
+import { IoMdPersonAdd } from "react-icons/io";
+import { MdCancel } from "react-icons/md";
 
 interface projectToUpdate {
     name: string;
@@ -25,6 +27,10 @@ const ProjectDetails = () => {
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
     const [editing, setEditing] = useState(false);
+    const [displayAddMember, setDisplayAddMember] = useState<boolean>(false);
+    const [email, setEmail] = useState<string>("");
+    const [emails, setEmails] = useState<string[]>([]);
+    const [isSelectingEmail, setIsSelectingEmail] = useState<boolean>(false);
 
     const navigate = useNavigate();
 
@@ -36,31 +42,28 @@ const ProjectDetails = () => {
         storyPoints: 0,
     });
 
-
     const updateProject = async () => {
-        
         setError(null);
         setLoading(true);
         const url = BASE_URL + "update-project/" + id;
-        const res = await fetch (url, {
+        const res = await fetch(url, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
                 Authorization: "Bearer " + token,
             },
-            body: JSON.stringify(projectDetails)
+            body: JSON.stringify(projectDetails),
         });
         const data = await res.json();
         if (data.success) {
             setEditing(false);
             fetchProject();
             setLoading(false);
-        }
-        else {
+        } else {
             setError(data.message);
             setLoading(false);
         }
-    }
+    };
 
     const fetchProject = async () => {
         setError(null);
@@ -74,12 +77,71 @@ const ProjectDetails = () => {
         });
         const data = await res.json();
         if (data.success) {
-            console.log(data.projects[0]);
             setProject(data.projects[0]);
         } else {
             setError(data.message);
         }
     };
+
+    const fetchEmails = async () => {
+        const url = BASE_URL + "fetch-emails";
+        const res = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + token,
+            },
+            body: JSON.stringify(email),
+        });
+        const data = await res.json();
+        console.log(data);
+        if (data.success) {
+            setEmails(data.emails);
+        } else {
+            setError(data.message);
+        }
+    };
+
+    const addMember = async () => {
+        const url = BASE_URL + "add-member/" + id;
+        const res = await fetch(url, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + token,
+            },
+            body: JSON.stringify({
+                email: email,
+            }),
+        });
+        const data = await res.json();
+        if (data.success) {
+            fetchProject();
+            console.log(project.members);
+        } else {
+            setError(data.message);
+        }
+    };
+
+    const removeMember = async (email: string) => {
+        const url = BASE_URL + "delete-member/" + id;
+        const res = await fetch(url, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + token,
+            },
+            body: JSON.stringify({
+                email: email,
+            }),
+        });
+        const data = await res.json();
+        if (data.success) {
+            fetchProject();
+        } else {
+            setError(data.message);
+        }
+    }
 
     useEffect(() => {
         fetchProject();
@@ -94,6 +156,12 @@ const ProjectDetails = () => {
             storyPoints: project?.storyPoints,
         });
     }, [project]);
+
+    useEffect(() => {
+        if (email.length >= 3 && isSelectingEmail == false) {
+            fetchEmails();
+        }
+    }, [email]);
 
     return (
         <div className="pt-[60px]">
@@ -197,10 +265,17 @@ const ProjectDetails = () => {
                                 }
                             />
 
-                            <button className="w-40 bg-black text-white py-2 px-4 rounded-lg hover:scale-105 duration-200 self-center" onClick={updateProject}>
+                            <button
+                                className="w-40 bg-black text-white py-2 px-4 rounded-lg hover:scale-105 duration-200 self-center"
+                                onClick={updateProject}
+                            >
                                 {loading ? "Updating.." : "Update"}
                             </button>
-                            {error && <div className="text-red-500 text-sm self-center">{error}</div>}
+                            {error && (
+                                <div className="text-red-500 text-sm self-center">
+                                    {error}
+                                </div>
+                            )}
                         </>
                     )}
 
@@ -234,14 +309,105 @@ const ProjectDetails = () => {
                                 </div>
                             </div>
 
-                            <p style={{ whiteSpace: "pre-wrap" }}>{project?.description}</p>
+                            <p style={{ whiteSpace: "pre-wrap" }}>
+                                {project?.description}
+                            </p>
                         </>
                     )}
-
                 </div>
 
-                <button 
-                    className="bg-black text-white p-2 rounded-lg hover:scale-105 duration-150" 
+                <div className="w-[90%] max-w-7xl flex items-center gap-4">
+                    <h1 className="text-2xl font-semibold">Project Members</h1>
+
+                    <button
+                        className="bg-black text-white p-2 rounded-lg hover:scale-105 duration-150 ml-auto flex items-center gap-2"
+                        onClick={() => setDisplayAddMember(!displayAddMember)}
+                    >
+                        <IoMdPersonAdd />
+                        Add Members
+                    </button>
+                </div>
+
+                {displayAddMember && (
+                    <div className="w-[88%] max-w-7xl h-40 flex flex-col items-center gap-4 shadow-md rounded-lg p-4">
+                        <div className="flex flex-col gap-2 self-start w-full relative">
+                            <h2 className="text-lg self-start">Email</h2>
+                            <div className="w-full h-10 border rounded-lg p-2 flex items-center gap-2">
+                                <input
+                                    type="text"
+                                    placeholder="Enter email.."
+                                    className="w-full outline-none"
+                                    value={email}
+                                    onChange={(e) => {
+                                        setIsSelectingEmail(false);
+                                        setEmail(e.target.value);
+                                    }}
+                                />
+
+                                <MdCancel
+                                    className="text-lg hover:scale-125 duration-150 cursor-pointer"
+                                    onClick={() => {
+                                        setIsSelectingEmail(false);
+                                        setEmail("");
+                                        setEmails([]);
+                                    }}
+                                />
+                            </div>
+
+                            {emails && (
+                                <div className="absolute w-full mt-1 bg-white rounded-lg shadow-lg top-full max-h-48 overflow-y-auto z-10 left-0">
+                                    {emails.map((emailItem, index) => {
+                                        return (
+                                            <div
+                                                key={index}
+                                                className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-gray-700"
+                                                onClick={() => {
+                                                    setIsSelectingEmail(true);
+                                                    setEmail(emailItem);
+                                                    setEmails([]);
+                                                }}
+                                            >
+                                                {emailItem}
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="flex gap-2 self-end">
+                            <button
+                                className="border border-black p-2 rounded-lg hover:scale-105 duration-200"
+                                onClick={() => setDisplayAddMember(false)}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                className="bg-black text-white p-2 rounded-lg hover:scale-105 duration-200"
+                                onClick={addMember}
+                            >
+                                Add Member
+                            </button>
+                        </div>
+                    </div>
+                )}
+
+                <div className="w-[90%] max-w-7xl flex flex-col items-center gap-2">
+                    {project?.members &&
+                        project?.members.length > 0 &&
+                        project.members.map((member: any, index: number) => (
+                            <div
+                                key={index}
+                                className="w-full border p-2 rounded-lg flex items-center"
+                            >
+                                <h2 className="text-lg ">{member.email}</h2>
+                                <MdCancel className="ml-auto text-xl hover:scale-105 duration-150 cursor-pointer" onClick={() => removeMember(member.email)} />
+                            </div>
+                        ))}
+                </div>
+
+                <button
+                    className="bg-black text-white p-2 rounded-lg hover:scale-105 duration-150"
                     onClick={() => navigate("/projects/" + id + "/tasks")}
                 >
                     Open Tasks Board
