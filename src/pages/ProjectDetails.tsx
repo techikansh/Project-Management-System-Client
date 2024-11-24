@@ -141,7 +141,7 @@ const ProjectDetails = () => {
         } else {
             setError(data.message);
         }
-    }
+    };
 
     useEffect(() => {
         fetchProject();
@@ -401,17 +401,36 @@ const ProjectDetails = () => {
                                 className="w-full border p-2 rounded-lg flex items-center"
                             >
                                 <h2 className="text-lg ">{member.email}</h2>
-                                <MdCancel className="ml-auto text-xl hover:scale-105 duration-150 cursor-pointer" onClick={() => removeMember(member.email)} />
+                                <MdCancel
+                                    className="ml-auto text-xl hover:scale-105 duration-150 cursor-pointer"
+                                    onClick={() => removeMember(member.email)}
+                                />
                             </div>
                         ))}
                 </div>
 
-                <button
-                    className="bg-black text-white p-2 rounded-lg hover:scale-105 duration-150"
-                    onClick={() => navigate("/projects/" + id + "/tasks")}
-                >
-                    Open Tasks Board
-                </button>
+                <div className="flex gap-4 items-center">
+                    <button
+                        className="border p-2 rounded-lg flex items-center gap-2 hover:scale-105 duration-150 hover:border-black"
+                        onClick={() => {
+                            window.open("https://meet.google.com/new")
+                        }}
+                    >
+                        <img
+                            src="https://img.icons8.com/?size=100&id=pE97I4t7Il9M&format=png&color=000000"
+                            alt="googleIcon"
+                            className="w-6 h-6"
+                        />
+                        Start Google Meet
+                    </button>
+
+                    <button
+                        className="bg-black text-white p-2 rounded-lg hover:scale-105 duration-150"
+                        onClick={() => navigate("/projects/" + id + "/tasks")}
+                    >
+                        Open Tasks Board
+                    </button>
+                </div>
             </div>
         </div>
     );
