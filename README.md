@@ -1,3 +1,6 @@
+The website is here live: https://kanban-board-opal-three.vercel.app/auth
+
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
